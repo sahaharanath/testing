@@ -1,17 +1,31 @@
-window.addEventListener('load', function() {
-    // Find the external counter element
-    const externalCounter = document.querySelector('script[src*="freehitcounters.org"]');
+// Function to update visitor count
+function updateVisitorCount() {
+    // Retrieve visitor count from local storage
+    let visitorCount = localStorage.getItem('visitorCount');
 
-    // Check if the external counter element exists and has loaded successfully
-    if (externalCounter && externalCounter.nextSibling && externalCounter.nextSibling.textContent) {
-        // Extract the total visitor count from the external counter
-        const visitorCountText = externalCounter.nextSibling.textContent.trim();
-        const totalVisitors = visitorCountText.match(/Total:\s*(\d+)/)[1];
-
-        // Update the visitor-count element with the extracted value
-        const visitorCountElement = document.getElementById('visitor-count');
-        visitorCountElement.textContent = totalVisitors;
+    // Check if visitor count is null or undefined
+    if (visitorCount === null || visitorCount === undefined) {
+        // Set visitor count to 1 if it's null or undefined
+        visitorCount = 1;
     } else {
-        console.error('External counter not found or failed to load.');
+        // Check if the visitor has already been counted
+        if (!localStorage.getItem('visitorFlag')) {
+            // Increment visitor count
+            visitorCount = parseInt(visitorCount) + 1;
+            // Set flag to indicate visitor has been counted
+            localStorage.setItem('visitorFlag', true);
+        }
     }
-});
+
+    // Update visitor count in local storage
+    localStorage.setItem('visitorCount', visitorCount);
+
+    // Display visitor count on the webpage
+    const visitorCountElement = document.getElementById('visitor-count');
+    if (visitorCountElement) {
+        visitorCountElement.textContent = visitorCount;
+    }
+}
+
+// Update visitor count on page load
+updateVisitorCount();
